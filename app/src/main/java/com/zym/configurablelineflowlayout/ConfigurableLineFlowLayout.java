@@ -56,14 +56,17 @@ public class ConfigurableLineFlowLayout extends ViewGroup {
      * 溢出监听
      */
     public interface OverFlowListener {
-        void overFlow(boolean isOverFlow);
+        void onOverFlow(boolean isOverFlow);
+        void onCompleteExpand();
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         if (isLimitLine && overFlowListener != null) {
-            overFlowListener.overFlow(isOverFlow);
+            overFlowListener.onOverFlow(isOverFlow);
+        } else if (!isLimitLine && overFlowListener != null) {
+            overFlowListener.onCompleteExpand();
         }
     }
 
@@ -137,6 +140,10 @@ public class ConfigurableLineFlowLayout extends ViewGroup {
     private List<List<View>> mAllViews = new ArrayList<>();
     // 存储每一行child高度的集合
     private List<Integer> mLineHeights = new ArrayList<>();
+
+    public List<Integer> getLineHeights() {
+        return mLineHeights;
+    }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {

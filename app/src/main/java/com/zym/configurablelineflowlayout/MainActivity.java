@@ -16,9 +16,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int LIMIT_LINE_COUNT = 2;
+    private static final int MAX_SHOW_LINE_COUNT = 6;// 最多显示行数
     private ConfigurableLineFlowLayout mFlowLayout;
     private List<TagBean> mTagList = new ArrayList<>();
     private boolean isSpread;// 是否展开
+    private MaxHeightScrollView mMaxHeightScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
         mTagList.clear();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
             TagBean tagBean = new TagBean(String.format("标签%d", i));
             mTagList.add(tagBean);
         }
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        mMaxHeightScrollView = findViewById(R.id.scroll_view);
         final TextView tv = findViewById(R.id.tv);
         mFlowLayout = findViewById(R.id.flow_layout);
         mFlowLayout.setLimitLineCount(LIMIT_LINE_COUNT);
@@ -80,8 +83,24 @@ public class MainActivity extends AppCompatActivity {
 
         mFlowLayout.setOverFlowListener(new ConfigurableLineFlowLayout.OverFlowListener() {
             @Override
-            public void overFlow(boolean isOverFlow) {
+            public void onOverFlow(boolean isOverFlow) {
                 tv.setVisibility(isOverFlow ? View.VISIBLE : View.GONE);
+            }
+
+            @Override
+            public void onCompleteExpand() {
+                List<Integer> lineHeights = mFlowLayout.getLineHeights();
+                if (!isSpread || lineHeights.isEmpty()) {
+                    return;
+                }
+
+                int maxHeight = 0;
+                if (lineHeights.size() >= MAX_SHOW_LINE_COUNT) {// 超过N行 高度固定 可滑动
+                    for (int i = 0; i < MAX_SHOW_LINE_COUNT; i++) {
+                        maxHeight += lineHeights.get(i);
+                    }
+                    mMaxHeightScrollView.setMaxHeight(maxHeight);
+                }
             }
         });
     }

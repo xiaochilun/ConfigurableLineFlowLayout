@@ -7,10 +7,18 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <com.zym.configurablelineflowlayout.ConfigurableLineFlowLayout
-        android:id="@+id/flow_layout"
+    <com.zym.configurablelineflowlayout.MaxHeightScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical">
+
+        <com.zym.configurablelineflowlayout.ConfigurableLineFlowLayout
+            android:id="@+id/flow_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.zym.configurablelineflowlayout.MaxHeightScrollView>
 
     <TextView
         android:id="@+id/tv"
